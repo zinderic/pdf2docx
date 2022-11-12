@@ -8,6 +8,8 @@ Usage:
 pdf2docx -file <pdf file> -output <output directory>
 ```
 
+Easy use: just run the program in directory that has PDF files and it will make DOCX files by the same name.
+
 ## Build on Mac
 
 You need `mupdf` and `mupdf-tools` installed. You also need `mingw` for Windows cross-compilation.

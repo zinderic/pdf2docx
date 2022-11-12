@@ -10,19 +10,24 @@ import (
 )
 
 func main() {
-	pdfFile := flag.String("file", "", "pdf file")
-	dirName := flag.String("output", "", "directory name where docx will be created")
 	flag.Parse()
-	converter.LocalDir = *dirName
-	if *pdfFile == "" {
+	if *converter.PdfFile == "." && *converter.DirName == "" {
+		err := converter.EasyMode()
+		if err != nil {
+			log.Fatalln(err)
+		}
+		os.Exit(0)
+	}
+	converter.LocalDir = *converter.DirName
+	if *converter.PdfFile == "" {
 		log.Fatalln("missing pdf file, use -file <pdf file>")
 	}
-	if *dirName == "" {
+	if *converter.DirName == "" {
 		log.Fatalln("missing output directory, use -output <directory name>")
 	}
-	doc, err := fitz.New(*pdfFile)
+	doc, err := fitz.New(*converter.PdfFile)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
 	defer doc.Close()
@@ -35,6 +40,6 @@ func main() {
 		log.Fatal(err)
 	}
 
-	converter.Pdf2Docx(doc)
+	converter.Pdf2Docx(doc, *converter.PdfFile)
 
 }
