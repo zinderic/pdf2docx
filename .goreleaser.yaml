@@ -14,23 +14,15 @@ scoop:
 builds:
   - id: pdf2docx
     goos:
-      - linux
-      - darwin
+      - windows
     goarch:
       - amd64
-      - arm64
-      - "386"
-    goarm:
-      - "6"
-    gomips:
-      - hardfloat
-    goamd64:
-      - v1
     targets:
-      - linux_amd64_v1
-      - linux_386
-      - darwin_amd64_v1
-      - darwin_arm64
+      - "windows_amd64"
+    env:
+      - CGO_ENABLED=1
+      - CC="x86_64-w64-mingw32-gcc"
+      - CXX="x86_64-w64-mingw32-g++"
     dir: .
     main: ./cmd
     binary: pdf2docx
