@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"os"
 	"path/filepath"
 	"regexp"
 	"strings"
@@ -53,6 +54,10 @@ func Text2Docx(text interface{}, file string) {
 			para.AddText(t).Size(16).Color("121212")
 		}
 		docxFile := strings.Replace(file, "pdf", "docx", 1)
+		if _, err := os.Stat(docxFile); err == nil {
+			log.Println("skipping file because it exist - ", docxFile)
+			return
+		}
 		log.Println("writing", docxFile)
 		f.Save(docxFile)
 	default:
