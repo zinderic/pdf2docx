@@ -3,8 +3,9 @@ package converter
 import (
 	"errors"
 	"flag"
+	"fmt"
+	"io/ioutil"
 	"log"
-	"os"
 	"path/filepath"
 	"regexp"
 	"strings"
@@ -30,6 +31,7 @@ func Pdf2Docx(doc *fitz.Document, filename string) {
 		}
 		allPages = append(allPages, text)
 	}
+	log.Println("converting", filename)
 	Text2Docx(allPages, filepath.Join(LocalDir, filename))
 }
 
@@ -51,6 +53,7 @@ func Text2Docx(text interface{}, file string) {
 			para.AddText(t).Size(16).Color("121212")
 		}
 		docxFile := strings.Replace(file, "pdf", "docx", 1)
+		log.Println("writing", docxFile)
 		f.Save(docxFile)
 	default:
 		log.Fatalln("can't parse text")
@@ -71,19 +74,24 @@ func EasyMode() error {
 		defer doc.Close()
 		Pdf2Docx(doc, v)
 	}
+	fmt.Println("> press enter to exit <")
+	fmt.Scanf("exit")
 	return nil
 }
 
 func getPdfFiles(dir string) []string {
-	var files []string
-	filepath.Walk(dir, func(path string, f os.FileInfo, _ error) error {
-		if !f.IsDir() {
-			r, err := regexp.MatchString("pdf", f.Name())
-			if err == nil && r {
-				files = append(files, f.Name())
-			}
+	var pdfFiles []string
+	files, err := ioutil.ReadDir(dir)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	r := regexp.MustCompile(".pdf$|.PDF$")
+	for _, f := range files {
+		if r.MatchString(f.Name()) {
+			pdfFiles = append(pdfFiles, f.Name())
 		}
-		return nil
-	})
-	return files
+	}
+
+	return pdfFiles
 }
