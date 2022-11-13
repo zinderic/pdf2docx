@@ -54,7 +54,7 @@ env_files:
   gitea_token: ~/.config/goreleaser/gitea_token
 source:
   name_template: '{{ .ProjectName }}-{{ .Version }}'
-  format: tar.gz
+  format: binary
 gomod:
   gobinary: go
 github_urls:
